@@ -6,25 +6,29 @@ describe SessionsController, type: :controller do
       email: 'apollo@gmail.com',
       password: '12345'
     }}
+    before {
+      User.create! valid_user_params
+    }
     it 'renders json of the user token' do
-      User.create(valid_user_params)
       post :create, format: :json, params: valid_user_params
-      expect(JSON.parse(response.body).keys).to eq ['token']
+      keys = JSON.parse(response.body).keys
+      expect(keys).to eq ['token']
     end
 
     it 'renders login errors' do
-      User.create(valid_user_params)
       post :create, format: :json, params: {}
-      expect(response).not_to be_nil
-      expect(JSON.parse(response.body).dig('errors').length.zero?).to eq false
+      errors = JSON.parse(response.body).dig('errors')
+      expect(errors.length.zero?).to eq false
     end
   end
 
   describe 'DELETE /logout' do
     it 'returns head :ok' do
-      user_token = double(:token, invalidate_token: true)
-      allow(controller).to receive(:authenticate_token).and_return user_token
-      delete :destroy, format: :json
+      user = instance_double('User')
+      expect(user).to receive(:invalidate_token)
+      allow(controller).to receive(:authenticate_token).and_return user
+      valid_session = { token: 'randomToken' }
+      delete :destroy, format: :json, params: { id: user.to_param }, session: valid_session
       expect(response.status).to eq 200
     end
   end
