@@ -6,7 +6,7 @@ Knock.setup do |config|
   ## How long before a token is expired. If nil is provided, token will
   ## last forever.
   ##
-  ## Default:
+  # Default:
   # config.token_lifetime = 1.day
 
 

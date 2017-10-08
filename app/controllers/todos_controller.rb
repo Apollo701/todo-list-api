@@ -1,4 +1,6 @@
 class TodosController < ApplicationController
+  before_action :authenticate_user
+
   def create
     if user = User.find(user_id)
       todo = user.todos.create(todo_params)
