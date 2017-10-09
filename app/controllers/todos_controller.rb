@@ -1,26 +1,44 @@
 class TodosController < ApplicationController
+  before_action :set_todo, only: [:update, :destroy]
   before_action :authenticate_user
 
   def create
-    if user = User.find(user_id)
-      todo = user.todos.create(todo_params)
+    @todo = Todo.new(todo_params)
+
+    if @todo.save
+      render json: @todo, status: :created, location: @todo
+    else
+      render json: @todo.errors, status: :unprocessable_entity
     end
-    render json: { todo: todo }
   end
 
   def update
+    if @todo.update(todo_params)
+      render json: @todo
+    else
+      render json: @todo.errors, status: :unprocessable_entity
+    end
   end
 
   def destroy
+    @todo.destroy
   end
 
   private
+
+  def set_todo
+    @todo = Todo.find(todo_id)
+  end
+
+  def todo_id
+    params.dig(:id)
+  end
 
   def user_id
     params.dig(:todo, :user_id)
   end
 
   def todo_params
-    params.require(:todo).permit(:user_id, :task, :completed)
+    params.require(:todo).permit(:task, :completed, :user_id)
   end
 end
