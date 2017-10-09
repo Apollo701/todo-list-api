@@ -49,4 +49,17 @@ describe UsersController, type: :controller do
       end
     end
   end
+
+  describe 'DELETE destroy' do
+    context 'authenticated' do
+      let!(:user) { User.create(email: 'apollo@gmail.com', password: '12345') }
+
+      before { authenticate(user) }
+
+      it 'destroys the user' do
+        expect{ delete :destroy, params: { id: user.id } }
+          .to change { User.count }.by(-1)
+      end
+    end
+  end
 end
