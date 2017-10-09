@@ -20,4 +20,33 @@ describe UsersController, type: :controller do
        expect(user_params['email']).to eq user_json['email']
     end
   end
+
+  describe 'PUT Update' do
+    context 'authenticated' do
+      let!(:user) { User.create(email: 'apollo@gmail.com', password: '12345') }
+      let!(:completed_params) { { task: 'create app', completed: true, user_id: user.id }.as_json }
+
+      before { authenticate(user) }
+
+      it 'updates the user from the provided arguments' do
+        updated_user_params = {
+          email: 'notapollo@gmail.com',
+          password: '54321',
+        }.as_json
+        expect{ put :update, params: { id: user.id, user: updated_user_params } }
+          .to change { user.reload.email }.to(updated_user_params['email'])
+      end
+
+      it 'returns the updated user' do
+        updated_user_params = {
+          email: 'notapollo@gmail.com',
+          password: '54321',
+        }.as_json
+
+        put :update, params: { id: user.id, user: updated_user_params }
+        user_json = JSON.parse(response.body)
+        expect(updated_user_params['email']).to eq user_json['email']
+      end
+    end
+  end
 end
