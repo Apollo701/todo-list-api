@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  before_action :set_user, only: [:update, :destroy]
+  before_action :set_user, only: [:show,:update, :destroy]
   before_action :authenticate_user
   skip_before_action :authenticate_user, only: [:create]
 
@@ -11,6 +11,10 @@ class UsersController < ApplicationController
     else
       render json: @user.errors, status: :unprocessable_entity
     end
+  end
+
+  def show
+    render json: { user: @user.as_json.merge({todos: @user.todos.as_json}) }
   end
 
   def update
@@ -32,7 +36,7 @@ class UsersController < ApplicationController
   private
 
   def set_user
-    @user = User.find(user_id)
+    @user = User.includes(:todos).find(user_id)
   end
 
   def user_id
