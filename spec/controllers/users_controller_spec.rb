@@ -26,15 +26,26 @@ describe UsersController, type: :controller do
       let!(:user) { User.create(email: 'apollo@gmail.com', password: '12345') }
       let!(:todo_params) { { task: 'create app', completed: false, user_id: user.id }.as_json }
 
-      before { authenticate(user) }
-
-      it 'gets the user with their todos' do
+      before {
+        authenticate(user)
         user.todos.create(todo_params)
         get :show, params: { id: user.id }
+      }
+
+      it 'gets gets json with the users email' do
+        user_json = JSON.parse(response.body)
+        expect(user_json.dig('user', 'email')).to match user.email
+      end
+
+      it "gets json matching todo id's" do
         user_json = JSON.parse(response.body)
         todos_json = user_json.dig('user', 'todos')
-        expect(user_json.dig('user', 'email')).to match user.email
         expect(todos_json.first.dig('id')).to eq user.todos.first.id
+      end
+
+      it "gets json matching todo id's" do
+        user_json = JSON.parse(response.body)
+        todos_json = user_json.dig('user', 'todos')
         expect(todos_json.first.dig('task')).to eq user.todos.first.task
       end
     end
