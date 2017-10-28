@@ -5,7 +5,7 @@ describe UsersController, type: :controller do
     let!(:user_params) do
       {
         email: 'apollo@gmail.com',
-        password: '12345'
+        password: '123456'
       }.as_json
     end
 
@@ -23,7 +23,7 @@ describe UsersController, type: :controller do
 
   describe 'GET Show' do
     context 'authenticated' do
-      let!(:user) { User.create(email: 'apollo@gmail.com', password: '12345') }
+      let!(:user) { User.create(email: 'apollo@gmail.com', password: '123456') }
       let!(:todo_params) { { task: 'create app', completed: false, user_id: user.id }.as_json }
 
       before {
@@ -53,7 +53,7 @@ describe UsersController, type: :controller do
 
   describe 'PUT Update' do
     context 'authenticated' do
-      let!(:user) { User.create(email: 'apollo@gmail.com', password: '12345') }
+      let!(:user) { User.create(email: 'apollo@gmail.com', password: '123456') }
       let!(:completed_params) { { task: 'create app', completed: true, user_id: user.id }.as_json }
 
       before { authenticate(user) }
@@ -61,7 +61,7 @@ describe UsersController, type: :controller do
       it 'updates the user from the provided arguments' do
         updated_user_params = {
           email: 'notapollo@gmail.com',
-          password: '54321',
+          password: '654321',
         }.as_json
         expect{ put :update, params: { id: user.id, user: updated_user_params } }
           .to change { user.reload.email }.to(updated_user_params['email'])
@@ -70,7 +70,7 @@ describe UsersController, type: :controller do
       it 'returns the updated user' do
         updated_user_params = {
           email: 'notapollo@gmail.com',
-          password: '54321',
+          password: '654321',
         }.as_json
 
         put :update, params: { id: user.id, user: updated_user_params }
@@ -82,7 +82,7 @@ describe UsersController, type: :controller do
 
   describe 'DELETE destroy' do
     context 'authenticated' do
-      let!(:user) { User.create(email: 'apollo@gmail.com', password: '12345') }
+      let!(:user) { User.create(email: 'apollo@gmail.com', password: '123456') }
 
       before { authenticate(user) }
 

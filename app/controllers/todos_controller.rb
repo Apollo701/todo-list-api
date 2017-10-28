@@ -3,7 +3,7 @@ class TodosController < ApplicationController
   before_action :authenticate_user
 
   def create
-    @todo = Todo.new(todo_params)
+    @todo = Todo.new(todo_params.merge({ completed: false }))
 
     if @todo.save
       render json: @todo, status: :created, location: @todo

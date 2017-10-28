@@ -3,8 +3,8 @@ require 'rails_helper'
 describe TodosController, type: :controller do
   describe 'POST todos/create' do
     context 'authenticated' do
-      let!(:user) { User.create(email: 'apollo@gmail.com', password: '12345') }
-      let!(:todo_params) { { task: 'create app', completed: false, user_id: user.id }.as_json }
+      let!(:user) { User.create(email: 'apollo@gmail.com', password: '123456') }
+      let!(:todo_params) { { task: 'create app', user_id: user.id }.as_json }
 
       before { authenticate(user) }
 
@@ -20,13 +20,20 @@ describe TodosController, type: :controller do
         expect{ post :create, params: { todo: todo_params } }
           .to change { user.todos.count }.by(1)
       end
+
+      it 'assigns a new todo as not completed' do
+        post :create, params: { todo: todo_params }
+        todo_id = JSON.parse(response.body).dig('id')
+        todo = Todo.find(todo_id)
+        expect(todo).not_to be_completed
+      end
     end
   end
 
   describe 'PUT todo/:id/update' do
     context 'authenticated' do
-      let!(:user) { User.create(email: 'apollo@gmail.com', password: '12345') }
-      let!(:todo_params) { { task: 'create app', completed: false, user_id: user.id }.as_json }
+      let!(:user) { User.create(email: 'apollo@gmail.com', password: '123456') }
+      let!(:todo_params) { { task: 'create app', user_id: user.id }.as_json }
       let!(:completed_params) { { task: 'create app', completed: true, user_id: user.id }.as_json }
 
       before { authenticate(user) }
@@ -63,8 +70,8 @@ describe TodosController, type: :controller do
 
   describe 'DELETE todo/:id/destroy' do
     context 'authenticated' do
-      let!(:user) { User.create(email: 'apollo@gmail.com', password: '12345') }
-      let!(:todo_params) { { task: 'create app', completed: false, user_id: user.id }.as_json }
+      let!(:user) { User.create(email: 'apollo@gmail.com', password: '123456') }
+      let!(:todo_params) { { task: 'create app', user_id: user.id }.as_json }
 
       before { authenticate(user) }
 
