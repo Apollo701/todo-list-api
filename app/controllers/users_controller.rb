@@ -13,7 +13,7 @@ class UsersController < ApplicationController
   end
 
   def show
-    render json: { user: current_user.as_json_with_todos }
+    render json: current_user.as_json_with_todos
   end
 
   def update

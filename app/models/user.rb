@@ -7,7 +7,7 @@ class User < ApplicationRecord
   before_save :downcase_email
 
   def as_json_with_todos
-    as_json.merge({ todos: todos.as_json })
+    { user:  as_json.merge({ todos: todos.as_json }) }
   end
 
   private
