@@ -6,6 +6,10 @@ class User < ApplicationRecord
   validates :password, length: { in: 6..20 }
   before_save :downcase_email
 
+  def as_json_with_todos
+    as_json.merge({ todos: todos.as_json })
+  end
+
   private
 
   def downcase_email

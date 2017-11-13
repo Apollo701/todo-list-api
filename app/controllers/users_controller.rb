@@ -1,5 +1,4 @@
 class UsersController < ApplicationController
-  before_action :set_user, only: [:show,:update, :destroy]
   before_action :authenticate_user
   skip_before_action :authenticate_user, only: [:create]
 
@@ -14,32 +13,22 @@ class UsersController < ApplicationController
   end
 
   def show
-    render json: { user: @user.as_json.merge({todos: @user.todos.as_json}) }
+    render json: { user: current_user.as_json_with_todos }
   end
 
   def update
-    if @user.update(user_params)
-      render json: @user
+    if current_user.update(user_params)
+      render json: current_user
     else
-      render json: @user.errors, status: :unprocessable_entity
+      render json: current_user.errors, status: :unprocessable_entity
     end
   end
 
   def destroy
-    @user.destroy
+    current_user.destroy
   end
 
   def user_params
     params.require(:user).permit(:email, :name, :password)
-  end
-
-  private
-
-  def set_user
-    @user = User.includes(:todos).find(user_id)
-  end
-
-  def user_id
-    params.dig(:id)
   end
 end
