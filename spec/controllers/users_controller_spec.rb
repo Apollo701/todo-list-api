@@ -24,7 +24,7 @@ describe UsersController, type: :controller do
   describe 'GET Show' do
     context 'authenticated' do
       let!(:user) { User.create(email: 'apollo@gmail.com', password: '123456') }
-      let!(:todo_params) { { task: 'create app', completed: false, user_id: user.id }.as_json }
+      let!(:todo_params) { { task: 'create app', completed: false }.as_json }
 
       before {
         authenticate(user)
@@ -40,13 +40,17 @@ describe UsersController, type: :controller do
       it "gets json matching todo id's" do
         user_json = JSON.parse(response.body)
         todos_json = user_json.dig('user', 'todos')
-        expect(todos_json.first.dig('id')).to eq user.todos.first.id
+        todo_json_id = todos_json.first.dig('id')
+        todo_id = user.todos.first.id
+        expect(todo_json_id).to eq todo_id
       end
 
-      it "gets json matching todo id's" do
+      it 'gets json matching todo task' do
         user_json = JSON.parse(response.body)
         todos_json = user_json.dig('user', 'todos')
-        expect(todos_json.first.dig('task')).to eq user.todos.first.task
+        todo_json_task = todos_json.first.dig('task')
+        todo_task = user.todos.first.task
+        expect(todo_json_task).to eq todo_task
       end
     end
   end
@@ -54,7 +58,7 @@ describe UsersController, type: :controller do
   describe 'PUT Update' do
     context 'authenticated' do
       let!(:user) { User.create(email: 'apollo@gmail.com', password: '123456') }
-      let!(:completed_params) { { task: 'create app', completed: true, user_id: user.id }.as_json }
+      let!(:completed_params) { { task: 'create app', completed: true }.as_json }
 
       before { authenticate(user) }
 
