@@ -2,6 +2,13 @@ require 'rails_helper'
 
 describe TodosController, type: :controller do
   describe 'POST todos/create' do
+    context 'not authenticated' do
+      it 'returns an error message' do
+        post :create, params: { todo: {} }
+        expect(response).to have_http_status(401)
+      end
+    end
+
     context 'authenticated' do
       let!(:user) { User.create(email: 'apollo@gmail.com', password: '123456') }
       let!(:todo_params) { { task: 'create app' }.as_json }
@@ -31,6 +38,13 @@ describe TodosController, type: :controller do
   end
 
   describe 'PUT todo/:id/update' do
+    context 'not authenticated' do
+      it 'returns an error message' do
+        post :create, params: { todo: {} }
+        expect(response).to have_http_status(401)
+      end
+    end
+
     context 'authenticated' do
       let!(:user) { User.create(email: 'apollo@gmail.com', password: '123456') }
       let!(:todo_params) { { task: 'create app', user_id: user.id }.as_json }
@@ -69,6 +83,13 @@ describe TodosController, type: :controller do
   end
 
   describe 'DELETE todo/:id/destroy' do
+    context 'not authenticated' do
+      it 'returns an error message' do
+        post :create, params: { todo: {} }
+        expect(response).to have_http_status(401)
+      end
+    end
+
     context 'authenticated' do
       let!(:user) { User.create(email: 'apollo@gmail.com', password: '123456') }
       let!(:todo_params) { { task: 'create app', user_id: user.id }.as_json }
