@@ -3,7 +3,7 @@ class TodosController < ApplicationController
   before_action :authenticate_user
 
   def create
-    @todo = Todo.new(todo_params.merge({ completed: false }))
+    @todo = current_user.todos.build(todo_params.merge({ completed: false }))
 
     if @todo.save
       render json: @todo, status: :created, location: @todo
@@ -27,18 +27,10 @@ class TodosController < ApplicationController
   private
 
   def set_todo
-    @todo = Todo.find(todo_id)
-  end
-
-  def todo_id
-    params.dig(:id)
-  end
-
-  def user_id
-    params.dig(:todo, :user_id)
+    @todo = Todo.find(params.dig(:id))
   end
 
   def todo_params
-    params.require(:todo).permit(:task, :completed, :user_id)
+    params.require(:todo).permit(:task, :completed)
   end
 end

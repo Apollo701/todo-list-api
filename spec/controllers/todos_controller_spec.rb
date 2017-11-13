@@ -4,7 +4,7 @@ describe TodosController, type: :controller do
   describe 'POST todos/create' do
     context 'authenticated' do
       let!(:user) { User.create(email: 'apollo@gmail.com', password: '123456') }
-      let!(:todo_params) { { task: 'create app', user_id: user.id }.as_json }
+      let!(:todo_params) { { task: 'create app' }.as_json }
 
       before { authenticate(user) }
 
