@@ -1,10 +1,14 @@
 class User < ApplicationRecord
+  VALID_EMAIL_REGEX = /\A([\w+\-].?)+@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+\z/i
+  INVALID_EMAIL_MESSAGE = 'Emails must consist of a normal email format'
   has_secure_password
   has_many :todos, dependent: :destroy
 
-  validates :email, uniqueness: { case_sensitive: false }
-  validates :password, length: { in: 6..20 }
   before_save :downcase_email
+  validates :password, length: { in: 6..20 }
+  validates :email, uniqueness: { case_sensitive: false }
+  validates :email, format: { with: VALID_EMAIL_REGEX,
+                              message: INVALID_EMAIL_MESSAGE }
 
   def as_json_with_todos
     { user:  as_json.merge({ todos: todos.as_json }) }
@@ -13,6 +17,6 @@ class User < ApplicationRecord
   private
 
   def downcase_email
-    self.email.downcase!
+    email.downcase!
   end
 end
